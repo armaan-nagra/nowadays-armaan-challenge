@@ -116,6 +116,10 @@ export function SearchBar({
   const submit = (params?: SearchParams) => {
     const p = params ?? { address, headcount, maxMinutes, mode, style };
     if (params) {
+      fetchSeq.current++; // don't let a scenario fill re-open the autocomplete
+      suppressFetch.current = true;
+      setOpen(false);
+      setSuggestions([]);
       setAddress(params.address);
       setHeadcount(params.headcount);
       setMaxMinutes(params.maxMinutes);
@@ -165,10 +169,12 @@ export function SearchBar({
             role="combobox"
             aria-expanded={open}
             aria-autocomplete="list"
+            aria-controls="address-suggestions"
             required
           />
           {open && (
             <ul
+              id="address-suggestions"
               className="absolute left-0 right-0 top-full mt-2 z-[1050] bg-paper border-[2.5px] border-ink rounded-xl overflow-hidden"
               style={{ boxShadow: "4px 4px 0 0 #22262b" }}
               role="listbox"

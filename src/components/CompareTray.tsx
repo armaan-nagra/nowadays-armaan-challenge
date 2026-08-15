@@ -19,6 +19,13 @@ export function CompareTray({
     if (entries.length < 2) setOpen(false);
   }, [entries.length]);
 
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
+
   if (entries.length === 0) return null;
 
   return (

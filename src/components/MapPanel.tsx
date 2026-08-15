@@ -80,7 +80,6 @@ export default function MapPanel({
         zoom={14}
         className="h-full w-full"
         scrollWheelZoom
-        attributionControl={false}
       >
         <TileLayer
           url="https://tiles.stadiamaps.com/tiles/stamen_watercolor/{z}/{x}/{y}.jpg"

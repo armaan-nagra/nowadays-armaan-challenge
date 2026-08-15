@@ -26,6 +26,14 @@ interface ScoutJob {
   error?: string;
 }
 
+const SCOUT_PHRASES = [
+  "counting chairs…",
+  "bribing the maître d'…",
+  "peeking into back rooms…",
+  "reading the fine print on minimums…",
+  "measuring walks in croissant-lengths…",
+];
+
 export default function Home() {
   const [params, setParams] = useState<SearchParams | null>(null);
   const [data, setData] = useState<SearchResponse | null>(null);
@@ -37,6 +45,17 @@ export default function Home() {
   const [scout, setScout] = useState<ScoutJob | null>(null);
   const scoutParams = useRef<SearchParams | null>(null);
   const searchSeq = useRef(0);
+  const [phraseIdx, setPhraseIdx] = useState(0);
+
+  // rotate the detective one-liners while a search is running
+  useEffect(() => {
+    if (!loading) return;
+    const id = setInterval(
+      () => setPhraseIdx((p) => (p + 1) % SCOUT_PHRASES.length),
+      1400
+    );
+    return () => clearInterval(id);
+  }, [loading]);
 
   const fetchResults = useCallback(async (p: SearchParams): Promise<SearchResponse> => {
     const res = await fetch("/api/search", {
@@ -149,14 +168,6 @@ export default function Home() {
           >
             Table&nbsp;Scout&nbsp;<span className="text-coral">🍽</span>
           </h1>
-          <div className="flex flex-col">
-            <span className="font-mono text-[0.7rem] uppercase tracking-widest text-ink-soft">
-              private dining finder · by nowadays
-            </span>
-            <span className="text-sm text-ink-soft">
-              Rooms, prices, and how much to trust them — for groups of any size.
-            </span>
-          </div>
         </div>
       </header>
 
@@ -177,6 +188,9 @@ export default function Home() {
             <p className="text-sm text-ink-soft mt-1">
               Checking rooms, walking times, and price signals near{" "}
               <span className="font-mono">{params?.address}</span>
+            </p>
+            <p className="font-mono text-[0.72rem] text-ink-soft mt-3">
+              {SCOUT_PHRASES[phraseIdx]}
             </p>
           </div>
         )}
@@ -205,7 +219,7 @@ export default function Home() {
                     <span className="bg-sunshine border-2 border-ink rounded-lg px-1.5">
                       {params?.headcount}
                     </span>{" "}
-                    near {data.origin.formatted.split(",")[0]}
+                    near {(params?.address ?? data.origin.formatted).split(",")[0]}
                   </>
                 ) : scouting ? (
                   <>Scouting this area…</>
@@ -317,8 +331,7 @@ export default function Home() {
 
       <footer className="px-6 py-4 text-center">
         <p className="font-mono text-[0.65rem] text-ink-soft">
-          research & recommendations only — no live booking · walk & drive times via Google Routes ·
-          map art by Stamen/Stadia
+          made with ❤️ by armaan
         </p>
       </footer>
 
