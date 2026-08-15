@@ -1,0 +1,181 @@
+@import "tailwindcss";
+
+@theme {
+  /* Sticker Map Pop palette */
+  --color-sky: #cde7f0;
+  --color-sky-deep: #b3d9e6;
+  --color-paper: #ffffff;
+  --color-coral: #ff6b57;
+  --color-coral-deep: #e8503c;
+  --color-sunshine: #ffc93c;
+  --color-pistachio: #7fc383;
+  --color-ink: #22262b;
+  --color-ink-soft: #5a6069;
+  --color-cloud: #f2f7f9;
+
+  --font-display: var(--font-fredoka);
+  --font-sans: var(--font-figtree);
+  --font-mono: var(--font-space-mono);
+
+  --shadow-sticker: 4px 4px 0 0 #22262b;
+  --shadow-sticker-sm: 2.5px 2.5px 0 0 #22262b;
+  --shadow-sticker-lg: 6px 6px 0 0 #22262b;
+}
+
+body {
+  background: var(--color-sky);
+  color: var(--color-ink);
+  font-family: var(--font-sans), sans-serif;
+  /* faint dot grid, like sticker-book paper */
+  background-image: radial-gradient(rgba(34, 38, 43, 0.07) 1.2px, transparent 1.2px);
+  background-size: 26px 26px;
+}
+
+/* ---------- sticker vocabulary ---------- */
+
+.sticker {
+  background: var(--color-paper);
+  border: 2.5px solid var(--color-ink);
+  border-radius: 18px;
+  box-shadow: var(--shadow-sticker);
+}
+
+.sticker-sm {
+  background: var(--color-paper);
+  border: 2px solid var(--color-ink);
+  border-radius: 12px;
+  box-shadow: var(--shadow-sticker-sm);
+}
+
+.sticker-hover {
+  transition: transform 130ms ease, box-shadow 130ms ease;
+}
+.sticker-hover:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-sticker-lg);
+}
+
+.btn-pop {
+  font-family: var(--font-display), sans-serif;
+  font-weight: 600;
+  border: 2.5px solid var(--color-ink);
+  border-radius: 14px;
+  box-shadow: var(--shadow-sticker-sm);
+  transition: transform 100ms ease, box-shadow 100ms ease, background 100ms ease;
+  cursor: pointer;
+}
+.btn-pop:hover {
+  transform: translate(-1.5px, -1.5px);
+  box-shadow: var(--shadow-sticker);
+}
+.btn-pop:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+
+.chip {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.72rem;
+  border: 2px solid var(--color-ink);
+  border-radius: 999px;
+  padding: 2px 10px;
+  background: var(--color-paper);
+  white-space: nowrap;
+}
+
+@keyframes wobble {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(-5deg) scale(1.08); }
+  60% { transform: rotate(4deg) scale(1.08); }
+  100% { transform: rotate(0deg) scale(1.06); }
+}
+
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sticker-hover, .btn-pop { transition: none; }
+  .sticker-hover:hover, .btn-pop:hover, .btn-pop:active { transform: none; }
+  * { animation: none !important; }
+}
+
+/* ---------- leaflet overrides ---------- */
+
+.leaflet-container {
+  font-family: var(--font-sans), sans-serif;
+  background: var(--color-sky-deep);
+}
+
+.pin-sticker {
+  background: transparent;
+  border: none;
+}
+.pin-sticker .pin-inner {
+  width: 38px;
+  height: 38px;
+  border-radius: 50% 50% 50% 6px;
+  background: var(--color-paper);
+  border: 2.5px solid var(--color-ink);
+  box-shadow: 3px 3px 0 0 rgba(34, 38, 43, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display), sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--color-ink);
+  transform: rotate(-45deg);
+  transform-origin: center;
+}
+.pin-sticker .pin-inner > span {
+  transform: rotate(45deg);
+}
+.pin-sticker:hover .pin-inner,
+.pin-sticker.pin-active .pin-inner {
+  background: var(--color-sunshine);
+  animation: wobble 350ms ease forwards;
+}
+.pin-sticker.pin-top .pin-inner {
+  background: var(--color-coral);
+  color: var(--color-paper);
+}
+.pin-sticker.pin-top:hover .pin-inner,
+.pin-sticker.pin-top.pin-active .pin-inner {
+  background: var(--color-coral-deep);
+}
+
+.pin-origin {
+  background: transparent;
+  border: none;
+}
+.pin-origin .origin-inner {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--color-sunshine);
+  border: 3px solid var(--color-ink);
+  box-shadow: 3px 3px 0 0 rgba(34, 38, 43, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  animation: bob 2.6s ease-in-out infinite;
+}
+
+.leaflet-popup-content-wrapper {
+  background: var(--color-paper);
+  border: 2.5px solid var(--color-ink);
+  border-radius: 14px;
+  box-shadow: var(--shadow-sticker-sm);
+  font-family: var(--font-sans), sans-serif;
+}
+.leaflet-popup-tip {
+  border: 2.5px solid var(--color-ink);
+  background: var(--color-paper);
+}
+
+::selection {
+  background: var(--color-sunshine);
+}
