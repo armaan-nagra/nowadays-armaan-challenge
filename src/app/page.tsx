@@ -7,6 +7,7 @@ import { VenueCard } from "@/components/VenueCard";
 import { VenueDetail } from "@/components/VenueDetail";
 import { CompareTray } from "@/components/CompareTray";
 import type { ScoredVenue, SearchParams, SearchResponse } from "@/lib/types";
+import { WalkIcon, CarIcon, MapDoodle } from "@/components/Doodles";
 
 const MapPanel = dynamic(() => import("@/components/MapPanel"), {
   ssr: false,
@@ -162,11 +163,12 @@ export default function Home() {
     <div className="min-h-screen flex flex-col">
       <header className="px-4 sm:px-6 pt-5 pb-1 max-w-7xl w-full mx-auto">
         <div className="flex items-center gap-3 flex-wrap">
+          {/* the one tilted, hard-shadowed element on the page */}
           <h1
-            className="font-display font-bold text-3xl sm:text-4xl bg-paper border-[3px] border-ink rounded-2xl px-4 py-1.5 -rotate-1 inline-block"
+            className="font-display font-extrabold text-3xl sm:text-4xl bg-paper border-2 border-ink rounded-2xl px-4 py-1.5 -rotate-1 inline-block"
             style={{ boxShadow: "5px 5px 0 0 #22262b" }}
           >
-            Table&nbsp;Scout&nbsp;<span className="text-coral">🍽</span>
+            Table&nbsp;Scout
           </h1>
         </div>
       </header>
@@ -197,14 +199,16 @@ export default function Home() {
 
         {!loading && !data && !error && (
           <div className="sticker p-10 text-center">
-            <div className="text-5xl">🗺️</div>
-            <p className="font-display font-semibold text-2xl mt-3">Where&apos;s dinner?</p>
+            <MapDoodle className="w-16 h-16 text-ink mx-auto" />
+            <p className="font-display font-bold text-2xl mt-3">
+              Where&apos;s <span className="scribble-under">dinner</span>?
+            </p>
             <p className="text-sm text-ink-soft mt-2 max-w-md mx-auto">
               Type an office, hotel, or landmark and we&apos;ll rank private dining venues within
               walking or driving distance — with capacities, price signals, and a trust label on every fact.
             </p>
-            <p className="font-mono text-[0.7rem] uppercase tracking-wider text-ink-soft mt-4">
-              ↑ or hit one of the try-me chips
+            <p className="font-hand text-xl text-ink-soft mt-4 -rotate-1">
+              psst — the try-me chips up there already know the answer ↑
             </p>
           </div>
         )}
@@ -216,7 +220,7 @@ export default function Home() {
                 {results.length > 0 ? (
                   <>
                     Top {results.length} spots for{" "}
-                    <span className="bg-sunshine border-2 border-ink rounded-lg px-1.5">
+                    <span className="bg-sunshine border border-ink rounded-lg px-1.5">
                       {params?.headcount}
                     </span>{" "}
                     near {(params?.address ?? data.origin.formatted).split(",")[0]}
@@ -228,14 +232,15 @@ export default function Home() {
                 )}
               </p>
               <span className="chip bg-paper">
-                {params?.mode === "driving" ? "🚗 driving" : "🚶 walking"} mode · ≤ {params?.maxMinutes} min ·{" "}
-                {data.meta.totalInRadius} venues scanned
+                {params?.mode === "driving" ? <CarIcon /> : <WalkIcon />}
+                {params?.mode === "driving" ? "driving" : "walking"} mode · ≤ {params?.maxMinutes}{" "}
+                min · {data.meta.totalInRadius} venues scanned
               </span>
             </div>
 
             {scouting && (
               <div className="sticker p-4 flex items-center gap-4">
-                <div className="text-3xl animate-bounce">🔎</div>
+                <div className="text-3xl animate-bounce">🕵️</div>
                 <div className="flex-1">
                   <p className="font-display font-semibold">
                     Live-scouting this neighborhood — reading venue websites…
@@ -245,7 +250,7 @@ export default function Home() {
                       ? `${scout!.done} of ${scout!.total} venues researched · results appear below as they're confirmed`
                       : "finding candidate venues nearby…"}
                   </p>
-                  <div className="mt-2 h-3 border-2 border-ink rounded-full overflow-hidden bg-cloud">
+                  <div className="mt-2 h-3 border border-ink rounded-full overflow-hidden bg-cloud">
                     <div
                       className="h-full bg-sunshine transition-all duration-700"
                       style={{
@@ -289,8 +294,8 @@ export default function Home() {
                       websites, and extracts rooms, capacities, and prices — with a trust label on
                       everything.
                     </p>
-                    <button onClick={startScout} className="btn-pop bg-coral text-paper px-6 py-2.5 text-lg mt-4">
-                      🔍 Scout this area now (~2–3 min)
+                    <button onClick={startScout} className="btn-cta px-6 py-2.5 text-lg mt-4">
+                      Scout this area now (~2–3 min)
                     </button>
                   </>
                 )}

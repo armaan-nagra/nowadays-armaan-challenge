@@ -3,18 +3,19 @@
 import { useEffect } from "react";
 import type { ScoredVenue } from "@/lib/types";
 import { TrustBadge, priceSignal } from "./TrustBadge";
+import { WalkIcon, CarIcon } from "./Doodles";
 
 const safeUrl = (u: string | null | undefined): string | null =>
   u && /^https?:\/\//i.test(u) ? u : null;
 
 const DIETARY_LABELS: Record<string, string> = {
-  vegetarian: "🥕 vegetarian",
-  vegan: "🌱 vegan",
-  gluten_free: "🌾 gluten-free",
-  kosher: "✡️ kosher",
-  halal: "☪️ halal",
-  dairy_free: "🥛 dairy-free",
-  nut_free: "🥜 nut-free",
+  vegetarian: "vegetarian",
+  vegan: "vegan",
+  gluten_free: "gluten-free",
+  kosher: "kosher",
+  halal: "halal",
+  dairy_free: "dairy-free",
+  nut_free: "nut-free",
 };
 
 export function VenueDetail({ entry, onClose }: { entry: ScoredVenue; onClose: () => void }) {
@@ -40,7 +41,7 @@ export function VenueDetail({ entry, onClose }: { entry: ScoredVenue; onClose: (
       aria-label={venue.name}
     >
       <div
-        className="w-full max-w-xl h-full bg-sky overflow-y-auto border-l-[3px] border-ink p-4 sm:p-6 space-y-4"
+        className="w-full max-w-xl h-full bg-sand overflow-y-auto border-l-[1.5px] border-ink p-4 sm:p-6 space-y-4"
         onClick={(e) => e.stopPropagation()}
       >
         {/* header */}
@@ -64,7 +65,8 @@ export function VenueDetail({ entry, onClose }: { entry: ScoredVenue; onClose: (
           <div className="flex flex-wrap gap-1.5 mt-3">
             {commute && (
               <span className="chip bg-sky">
-                {commute.mode === "driving" ? "🚗" : "🚶"} {Math.round(commute.duration_minutes)} min ·{" "}
+                {commute.mode === "driving" ? <CarIcon /> : <WalkIcon />}
+                {Math.round(commute.duration_minutes)} min ·{" "}
                 {(commute.distance_meters / 1609).toFixed(1)} mi
               </span>
             )}
@@ -87,7 +89,7 @@ export function VenueDetail({ entry, onClose }: { entry: ScoredVenue; onClose: (
                 href={venue.private_dining_url!}
                 target="_blank"
                 rel="noreferrer"
-                className="btn-pop bg-coral text-paper text-sm px-3 py-1.5"
+                className="btn-cta text-sm px-3.5 py-1.5"
               >
                 Private dining page ↗
               </a>
@@ -201,7 +203,7 @@ export function VenueDetail({ entry, onClose }: { entry: ScoredVenue; onClose: (
                     rel="noreferrer"
                     className="chip hover:bg-sunshine transition-colors"
                   >
-                    📄 menu {venue.menu_urls.length > 1 ? i + 1 : ""} ↗
+                    menu {venue.menu_urls.length > 1 ? i + 1 : ""} ↗
                   </a>
                 ))}
               </div>
@@ -229,26 +231,36 @@ export function VenueDetail({ entry, onClose }: { entry: ScoredVenue; onClose: (
           </div>
           <div className="space-y-1.5 mt-2 text-sm">
             {venue.events_email && (
-              <p>
-                ✉️{" "}
-                <a className="underline font-mono" href={`mailto:${venue.events_email}`}>
-                  {venue.events_email}
-                </a>{" "}
-                <span className="text-ink-soft text-[0.75rem]">
-                  {venue.contact_trust === "verified" ? "(events)" : "(from website — confirm it reaches events)"}
+              <p className="flex items-baseline gap-3">
+                <span className="w-14 shrink-0 font-mono text-[0.65rem] uppercase tracking-wider text-ink-soft">
+                  email
+                </span>
+                <span>
+                  <a className="underline font-mono" href={`mailto:${venue.events_email}`}>
+                    {venue.events_email}
+                  </a>{" "}
+                  <span className="text-ink-soft text-[0.75rem]">
+                    {venue.contact_trust === "verified"
+                      ? "(events)"
+                      : "(from website — confirm it reaches events)"}
+                  </span>
                 </span>
               </p>
             )}
             {venue.events_phone && (
-              <p>
-                📞 <span className="font-mono">{venue.events_phone}</span>{" "}
-                <span className="text-ink-soft text-[0.75rem]">(events)</span>
+              <p className="flex items-baseline gap-3">
+                <span className="w-14 shrink-0 font-mono text-[0.65rem] uppercase tracking-wider text-ink-soft">
+                  events
+                </span>
+                <span className="font-mono">{venue.events_phone}</span>
               </p>
             )}
             {venue.phone && (
-              <p>
-                ☎️ <span className="font-mono">{venue.phone}</span>{" "}
-                <span className="text-ink-soft text-[0.75rem]">(main line)</span>
+              <p className="flex items-baseline gap-3">
+                <span className="w-14 shrink-0 font-mono text-[0.65rem] uppercase tracking-wider text-ink-soft">
+                  main
+                </span>
+                <span className="font-mono">{venue.phone}</span>
               </p>
             )}
             {!venue.events_email && !venue.events_phone && !venue.phone && (

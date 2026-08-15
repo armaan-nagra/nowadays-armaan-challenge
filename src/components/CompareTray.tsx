@@ -39,7 +39,7 @@ export function CompareTray({
             {entries.map((e, i) => (
               <span
                 key={e.venue.id}
-                className="w-8 h-8 rounded-full bg-sunshine border-2 border-ink flex items-center justify-center font-display font-bold text-sm"
+                className="w-8 h-8 rounded-full bg-sunshine border border-ink flex items-center justify-center font-display font-bold text-sm"
                 title={e.venue.name}
                 style={{ zIndex: 10 - i }}
               >
@@ -48,7 +48,7 @@ export function CompareTray({
             ))}
           </div>
           <button
-            className="btn-pop bg-coral text-paper px-4 py-1.5 text-sm disabled:opacity-50"
+            className="btn-cta px-4 py-1.5 text-sm disabled:opacity-50"
             disabled={entries.length < 2}
             onClick={() => setOpen(true)}
           >

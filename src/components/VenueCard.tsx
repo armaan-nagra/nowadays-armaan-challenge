@@ -2,6 +2,7 @@
 
 import type { ScoredVenue } from "@/lib/types";
 import { TrustBadge, priceSignal } from "./TrustBadge";
+import { WalkIcon, CarIcon } from "./Doodles";
 
 export function VenueCard({
   entry,
@@ -34,10 +35,9 @@ export function VenueCard({
     >
       <div className="flex items-start gap-3">
         <div
-          className={`shrink-0 w-10 h-10 rounded-full border-[2.5px] border-ink flex items-center justify-center font-display font-bold text-lg -rotate-3 ${
+          className={`shrink-0 w-10 h-10 rounded-full border-[1.5px] border-ink flex items-center justify-center font-display font-bold text-lg ${
             rank <= 3 ? "bg-coral text-paper" : "bg-sunshine"
           }`}
-          style={{ boxShadow: "2.5px 2.5px 0 0 #22262b" }}
         >
           {rank}
         </div>
@@ -54,7 +54,8 @@ export function VenueCard({
           <div className="flex flex-wrap gap-1.5 mt-2.5">
             {commute && (
               <span className="chip bg-sky">
-                {commute.mode === "driving" ? "🚗" : "🚶"} {Math.round(commute.duration_minutes)} min
+                {commute.mode === "driving" ? <CarIcon /> : <WalkIcon />}
+                {Math.round(commute.duration_minutes)} min
               </span>
             )}
             {bestRoom ? (
@@ -71,7 +72,7 @@ export function VenueCard({
                 up to {Math.max(venue.max_seated ?? 0, venue.max_standing ?? 0)}
               </span>
             ) : (
-              <span className="chip bg-cloud">capacity? ☎</span>
+              <span className="chip bg-cloud">capacity? call to ask</span>
             )}
             {price && <span className="chip bg-sunshine/50">{price}</span>}
             {venue.cuisines.slice(0, 1).map((c) => (

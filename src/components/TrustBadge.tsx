@@ -8,7 +8,7 @@ const STYLES: Record<TrustLabel, { bg: string; label: string; icon: string }> = 
 
 export function TrustBadge({
   trust,
-  tilt = true,
+  tilt = false,
   className = "",
 }: {
   trust: TrustLabel;
@@ -18,8 +18,7 @@ export function TrustBadge({
   const s = STYLES[trust];
   return (
     <span
-      className={`inline-flex items-center gap-1 border-2 border-ink rounded-full px-2.5 py-0.5 font-mono text-[0.68rem] font-bold lowercase tracking-tight ${s.bg} ${tilt ? "-rotate-2" : ""} ${className}`}
-      style={{ boxShadow: "2px 2px 0 0 #22262b" }}
+      className={`inline-flex items-center gap-1 border border-ink rounded-full px-2.5 py-0.5 font-mono text-[0.68rem] font-bold lowercase tracking-tight ${s.bg} ${tilt ? "-rotate-2" : ""} ${className}`}
       title={
         trust === "verified"
           ? "Stated on the venue's own website"

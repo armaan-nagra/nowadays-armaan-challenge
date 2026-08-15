@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
-import { Fredoka, Figtree, Space_Mono } from "next/font/google";
+import { Bricolage_Grotesque, Figtree, Space_Mono, Caveat } from "next/font/google";
 import "./globals.css";
 
-const fredoka = Fredoka({
-  variable: "--font-fredoka",
+const bricolage = Bricolage_Grotesque({
+  variable: "--font-bricolage",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
 });
 
 const figtree = Figtree({
@@ -19,6 +18,11 @@ const spaceMono = Space_Mono({
   weight: ["400", "700"],
 });
 
+const caveat = Caveat({
+  variable: "--font-caveat",
+  subsets: ["latin"],
+});
+
 export const metadata: Metadata = {
   title: "Table Scout — Private Dining Finder",
   description:
@@ -29,7 +33,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${fredoka.variable} ${figtree.variable} ${spaceMono.variable} h-full antialiased`}
+      className={`${bricolage.variable} ${figtree.variable} ${spaceMono.variable} ${caveat.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>

@@ -1,86 +1,147 @@
 @import "tailwindcss";
 
 @theme {
-  /* Sticker Map Pop palette */
+  /* Sticker Map Pop v2 — warm paper ground, ink lines, three loud flats */
   --color-sky: #cde7f0;
   --color-sky-deep: #b3d9e6;
-  --color-paper: #ffffff;
+  --color-paper: #fffdf8;
+  --color-sand: #f6f1e6;
   --color-coral: #ff6b57;
-  --color-coral-deep: #e8503c;
-  --color-sunshine: #ffc93c;
+  --color-coral-deep: #d84a35;
+  --color-sunshine: #ffc900;
   --color-pistachio: #7fc383;
   --color-ink: #22262b;
-  --color-ink-soft: #5a6069;
-  --color-cloud: #f2f7f9;
+  --color-ink-soft: #5f5c55;
+  --color-cloud: #f1ece1;
 
-  --font-display: var(--font-fredoka);
+  --font-display: var(--font-bricolage);
   --font-sans: var(--font-figtree);
   --font-mono: var(--font-space-mono);
-
-  --shadow-sticker: 4px 4px 0 0 #22262b;
-  --shadow-sticker-sm: 2.5px 2.5px 0 0 #22262b;
-  --shadow-sticker-lg: 6px 6px 0 0 #22262b;
+  --font-hand: var(--font-caveat);
 }
 
 body {
-  background: var(--color-sky);
+  background: var(--color-sand);
   color: var(--color-ink);
   font-family: var(--font-sans), sans-serif;
-  /* faint dot grid, like sticker-book paper */
-  background-image: radial-gradient(rgba(34, 38, 43, 0.07) 1.2px, transparent 1.2px);
+  /* faint dot grid on warm paper */
+  background-image: radial-gradient(rgba(34, 38, 43, 0.07) 1.1px, transparent 1.1px);
   background-size: 26px 26px;
 }
 
-/* ---------- sticker vocabulary ---------- */
+.font-hand {
+  font-family: var(--font-hand), cursive;
+}
+
+/* ---------- sticker vocabulary ----------
+   Quiet at rest: 1px ink lines, no static offset shadows.
+   Loudness is earned: hover lifts + shadow appears, press sits flat. */
 
 .sticker {
   background: var(--color-paper);
-  border: 2.5px solid var(--color-ink);
-  border-radius: 18px;
-  box-shadow: var(--shadow-sticker);
+  border: 1.5px solid var(--color-ink);
+  border-radius: 12px;
+  box-shadow: 0 2px 0 0 var(--color-ink);
 }
 
 .sticker-sm {
   background: var(--color-paper);
-  border: 2px solid var(--color-ink);
-  border-radius: 12px;
-  box-shadow: var(--shadow-sticker-sm);
+  border: 1px solid var(--color-ink);
+  border-radius: 8px;
+  box-shadow: 0 2px 0 0 var(--color-ink);
 }
 
-.sticker-hover {
-  transition: transform 130ms ease, box-shadow 130ms ease;
-}
-.sticker-hover:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: var(--shadow-sticker-lg);
+@media (prefers-reduced-motion: no-preference) {
+  .sticker-hover {
+    transition: transform 110ms ease, box-shadow 110ms ease;
+  }
+  .sticker-hover:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: 5px 5px 0 0 var(--color-ink);
+  }
+  .sticker-hover:active {
+    transform: none;
+    box-shadow: 0 2px 0 0 var(--color-ink);
+  }
 }
 
+/* secondary buttons: quiet pill, gumroad-style hover lift */
 .btn-pop {
   font-family: var(--font-display), sans-serif;
   font-weight: 600;
-  border: 2.5px solid var(--color-ink);
-  border-radius: 14px;
-  box-shadow: var(--shadow-sticker-sm);
-  transition: transform 100ms ease, box-shadow 100ms ease, background 100ms ease;
+  border: 1px solid var(--color-ink);
+  border-radius: 999px;
   cursor: pointer;
 }
-.btn-pop:hover {
-  transform: translate(-1.5px, -1.5px);
-  box-shadow: var(--shadow-sticker);
+@media (prefers-reduced-motion: no-preference) {
+  .btn-pop {
+    transition: transform 100ms ease, box-shadow 100ms ease, background 100ms ease;
+  }
+  .btn-pop:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 3px 3px 0 0 var(--color-ink);
+  }
+  .btn-pop:active {
+    transform: none;
+    box-shadow: none;
+  }
 }
-.btn-pop:active {
-  transform: translate(2px, 2px);
-  box-shadow: none;
+
+/* primary CTA: duolingo press physics — colored lip, no border */
+.btn-cta {
+  font-family: var(--font-display), sans-serif;
+  font-weight: 700;
+  border: none;
+  border-radius: 14px;
+  background: var(--color-coral);
+  color: var(--color-paper);
+  box-shadow: 0 4px 0 0 var(--color-coral-deep);
+  cursor: pointer;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .btn-cta {
+    transition: transform 80ms ease, box-shadow 80ms ease, filter 80ms ease;
+  }
+  .btn-cta:hover {
+    filter: brightness(1.05);
+  }
+  .btn-cta:active {
+    transform: translateY(4px);
+    box-shadow: 0 0 0 0 var(--color-coral-deep);
+  }
+}
+.btn-cta:disabled {
+  box-shadow: 0 4px 0 0 var(--color-coral-deep);
+  transform: none;
 }
 
 .chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   font-family: var(--font-mono), monospace;
   font-size: 0.72rem;
-  border: 2px solid var(--color-ink);
+  border: 1px solid var(--color-ink);
   border-radius: 999px;
   padding: 2px 10px;
   background: var(--color-paper);
   white-space: nowrap;
+}
+
+/* the one hand-drawn underline (hero) */
+.scribble-under {
+  position: relative;
+  white-space: nowrap;
+}
+.scribble-under::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.14em;
+  height: 0.18em;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 12' preserveAspectRatio='none'%3E%3Cpath d='M2 8 Q 12 2, 24 7 T 46 7 T 68 7 T 90 7 T 118 6' fill='none' stroke='%23ff6b57' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat;
+  background-size: 100% 100%;
 }
 
 @keyframes wobble {
@@ -96,9 +157,7 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .sticker-hover, .btn-pop { transition: none; }
-  .sticker-hover:hover, .btn-pop:hover, .btn-pop:active { transform: none; }
-  * { animation: none !important; }
+  * { animation: none !important; transition: none !important; }
 }
 
 /* ---------- leaflet overrides ---------- */
@@ -113,18 +172,18 @@ body {
   border: none;
 }
 .pin-sticker .pin-inner {
-  width: 38px;
-  height: 38px;
+  width: 36px;
+  height: 36px;
   border-radius: 50% 50% 50% 6px;
   background: var(--color-paper);
-  border: 2.5px solid var(--color-ink);
-  box-shadow: 3px 3px 0 0 rgba(34, 38, 43, 0.85);
+  border: 1.5px solid var(--color-ink);
+  box-shadow: 2px 2px 0 0 rgba(34, 38, 43, 0.55);
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--font-display), sans-serif;
   font-weight: 700;
-  font-size: 15px;
+  font-size: 14px;
   color: var(--color-ink);
   transform: rotate(-45deg);
   transform-origin: center;
@@ -151,28 +210,32 @@ body {
   border: none;
 }
 .pin-origin .origin-inner {
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   background: var(--color-sunshine);
-  border: 3px solid var(--color-ink);
-  box-shadow: 3px 3px 0 0 rgba(34, 38, 43, 0.85);
+  border: 1.5px solid var(--color-ink);
+  box-shadow: 2px 2px 0 0 rgba(34, 38, 43, 0.55);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 22px;
   animation: bob 2.6s ease-in-out infinite;
+  color: var(--color-ink);
+}
+.pin-origin .origin-inner svg {
+  width: 20px;
+  height: 20px;
 }
 
 .leaflet-popup-content-wrapper {
   background: var(--color-paper);
-  border: 2.5px solid var(--color-ink);
-  border-radius: 14px;
-  box-shadow: var(--shadow-sticker-sm);
+  border: 1.5px solid var(--color-ink);
+  border-radius: 10px;
+  box-shadow: 0 2px 0 0 var(--color-ink);
   font-family: var(--font-sans), sans-serif;
 }
 .leaflet-popup-tip {
-  border: 2.5px solid var(--color-ink);
+  border: 1.5px solid var(--color-ink);
   background: var(--color-paper);
 }
 

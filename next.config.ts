@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // hide the dev-tools indicator bubble (dev-only overlay; never ships to prod)
+  devIndicators: false,
 };
 
 export default nextConfig;

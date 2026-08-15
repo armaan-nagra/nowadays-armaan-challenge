@@ -2,11 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { SearchParams } from "@/lib/types";
+import { WalkIcon, CarIcon, PinIcon } from "./Doodles";
 
-const SCENARIOS: { label: string; emoji: string; params: SearchParams }[] = [
+const SCENARIOS: { label: string; params: SearchParams }[] = [
   {
     label: "50 · Times Square · 20 min",
-    emoji: "🗽",
     params: {
       address: "Times Square, New York, NY",
       headcount: 50,
@@ -17,7 +17,6 @@ const SCENARIOS: { label: string; emoji: string; params: SearchParams }[] = [
   },
   {
     label: "30 · Salesforce Tower · 15 min",
-    emoji: "🌉",
     params: {
       address: "415 Mission St, San Francisco, CA 94105",
       headcount: 30,
@@ -28,7 +27,6 @@ const SCENARIOS: { label: string; emoji: string; params: SearchParams }[] = [
   },
   {
     label: "200 · Waikiki happy hour · 15 min",
-    emoji: "🌺",
     params: {
       address: "Hilton Hawaiian Village Waikiki Beach Resort, Honolulu, HI",
       headcount: 200,
@@ -164,7 +162,7 @@ export function SearchBar({
               }
             }}
             placeholder="Office address, hotel, landmark…"
-            className="w-full border-2 border-ink rounded-xl px-3.5 py-2.5 bg-paper text-[0.95rem] focus:outline-none focus:ring-4 focus:ring-sunshine/60 placeholder:text-ink-soft/60"
+            className="w-full border border-ink rounded-lg px-3.5 py-2.5 bg-paper text-[0.95rem] focus:outline-none focus:ring-4 focus:ring-sunshine/60 placeholder:text-ink-soft/60"
             autoComplete="off"
             role="combobox"
             aria-expanded={open}
@@ -175,8 +173,8 @@ export function SearchBar({
           {open && (
             <ul
               id="address-suggestions"
-              className="absolute left-0 right-0 top-full mt-2 z-[1050] bg-paper border-[2.5px] border-ink rounded-xl overflow-hidden"
-              style={{ boxShadow: "4px 4px 0 0 #22262b" }}
+              className="absolute left-0 right-0 top-full mt-2 z-[1050] bg-paper border-[1.5px] border-ink rounded-lg overflow-hidden"
+              style={{ boxShadow: "3px 3px 0 0 #22262b" }}
               role="listbox"
             >
               {suggestions.map((s, i) => (
@@ -189,7 +187,7 @@ export function SearchBar({
                     onMouseEnter={() => setActiveIdx(i)}
                     onClick={() => pick(s)}
                   >
-                    <span aria-hidden>📍</span>
+                    <PinIcon className="w-3.5 h-3.5 shrink-0 text-coral" />
                     <span className="truncate">{s}</span>
                   </button>
                 </li>
@@ -208,7 +206,7 @@ export function SearchBar({
             max={2000}
             value={headcount}
             onChange={(e) => setHeadcount(parseInt(e.target.value) || 1)}
-            className="w-full border-2 border-ink rounded-xl px-3.5 py-2.5 bg-paper font-mono text-[0.95rem] focus:outline-none focus:ring-4 focus:ring-sunshine/60"
+            className="w-full border border-ink rounded-lg px-3.5 py-2.5 bg-paper font-mono text-[0.95rem] focus:outline-none focus:ring-4 focus:ring-sunshine/60"
           />
         </label>
 
@@ -220,7 +218,7 @@ export function SearchBar({
             <select
               value={maxMinutes}
               onChange={(e) => setMaxMinutes(parseInt(e.target.value))}
-              className="flex-1 min-w-0 border-2 border-ink rounded-xl px-3 py-2.5 bg-paper font-mono text-[0.9rem] focus:outline-none focus:ring-4 focus:ring-sunshine/60"
+              className="flex-1 min-w-0 border border-ink rounded-lg px-3 py-2.5 bg-paper font-mono text-[0.9rem] focus:outline-none focus:ring-4 focus:ring-sunshine/60"
               aria-label="Maximum commute minutes"
             >
               {[5, 10, 15, 20, 25, 30].map((m) => (
@@ -229,16 +227,16 @@ export function SearchBar({
                 </option>
               ))}
             </select>
-            <div className="flex border-2 border-ink rounded-xl overflow-hidden shrink-0" role="radiogroup" aria-label="Commute mode">
+            <div className="flex border border-ink rounded-lg overflow-hidden shrink-0" role="radiogroup" aria-label="Commute mode">
               <button
                 type="button"
                 role="radio"
                 aria-checked={mode === "walking"}
                 title="Walking"
                 onClick={() => setMode("walking")}
-                className={`px-2.5 text-lg ${mode === "walking" ? "bg-sunshine" : "bg-paper hover:bg-cloud"}`}
+                className={`px-2.5 flex items-center ${mode === "walking" ? "bg-sunshine" : "bg-paper hover:bg-cloud"}`}
               >
-                🚶
+                <WalkIcon className="w-4 h-4" />
               </button>
               <button
                 type="button"
@@ -246,9 +244,9 @@ export function SearchBar({
                 aria-checked={mode === "driving"}
                 title="Driving"
                 onClick={() => setMode("driving")}
-                className={`px-2.5 text-lg border-l-2 border-ink ${mode === "driving" ? "bg-sunshine" : "bg-paper hover:bg-cloud"}`}
+                className={`px-2.5 flex items-center border-l border-ink ${mode === "driving" ? "bg-sunshine" : "bg-paper hover:bg-cloud"}`}
               >
-                🚗
+                <CarIcon className="w-5 h-5" />
               </button>
             </div>
           </div>
@@ -261,7 +259,7 @@ export function SearchBar({
           <select
             value={style}
             onChange={(e) => setStyle(e.target.value as SearchParams["style"])}
-            className="w-full border-2 border-ink rounded-xl px-3 py-2.5 bg-paper font-mono text-[0.9rem] focus:outline-none focus:ring-4 focus:ring-sunshine/60"
+            className="w-full border border-ink rounded-lg px-3 py-2.5 bg-paper font-mono text-[0.9rem] focus:outline-none focus:ring-4 focus:ring-sunshine/60"
           >
             {STYLE_OPTIONS.map((o) => (
               <option key={o.value} value={o.value}>
@@ -274,7 +272,7 @@ export function SearchBar({
         <button
           type="submit"
           disabled={loading}
-          className="btn-pop bg-coral text-paper px-6 py-2.5 text-lg disabled:opacity-60 disabled:cursor-wait shrink-0"
+          className="btn-cta px-6 py-2.5 text-lg disabled:opacity-60 disabled:cursor-wait shrink-0"
         >
           {loading ? "Scouting…" : "Find tables"}
         </button>
@@ -292,7 +290,7 @@ export function SearchBar({
             disabled={loading}
             className="chip hover:bg-sunshine transition-colors cursor-pointer disabled:cursor-wait"
           >
-            {s.emoji} {s.label}
+            {s.label}
           </button>
         ))}
       </div>

@@ -26,16 +26,18 @@ function pinIcon(rank: number, isTop: boolean, isActive: boolean): L.DivIcon {
   return L.divIcon({
     className: `pin-sticker ${isTop ? "pin-top" : ""} ${isActive ? "pin-active" : ""}`,
     html: `<div class="pin-inner"><span>${rank}</span></div>`,
-    iconSize: [38, 38],
-    iconAnchor: [19, 34],
+    iconSize: [36, 36],
+    iconAnchor: [18, 33],
   });
 }
 
+const ORIGIN_PIN_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.2c3.4-4 6-7 6-10.4a6 6 0 1 0-12 0c0 3.4 2.6 6.4 6 10.4z"/><circle cx="12" cy="10.6" r="1.6" fill="currentColor" stroke="none"/></svg>`;
+
 const originIcon = L.divIcon({
   className: "pin-origin",
-  html: `<div class="origin-inner">📍</div>`,
-  iconSize: [44, 44],
-  iconAnchor: [22, 22],
+  html: `<div class="origin-inner">${ORIGIN_PIN_SVG}</div>`,
+  iconSize: [40, 40],
+  iconAnchor: [20, 20],
 });
 
 function Recenter({ lat, lng, radiusM }: { lat: number; lng: number; radiusM: number }) {
