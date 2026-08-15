@@ -1,7 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import ws from "ws";
 
-// Server-side client with service role — never import from client components.
+// Server-side client with service role - never import from client components.
 // `ws` transport keeps supabase-js happy on Node 20 (no native WebSocket).
 export function supabaseAdmin() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;

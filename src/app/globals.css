@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  /* Sticker Map Pop v2 — warm paper ground, ink lines, three loud flats */
+  /* Sticker Map Pop v2 - warm paper ground, ink lines, three loud flats */
   --color-sky: #cde7f0;
   --color-sky-deep: #b3d9e6;
   --color-paper: #fffdf8;
@@ -87,7 +87,7 @@ body {
   }
 }
 
-/* primary CTA: duolingo press physics — colored lip, no border */
+/* primary CTA: duolingo press physics - colored lip, no border */
 .btn-cta {
   font-family: var(--font-display), sans-serif;
   font-weight: 700;

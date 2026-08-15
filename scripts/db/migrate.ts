@@ -11,7 +11,7 @@ config({ path: ".env.local", override: true });
 
 const dbUrl = process.env.SUPABASE_DB_URL;
 if (!dbUrl) {
-  console.error("Missing SUPABASE_DB_URL in .env.local (Supabase → Connect → Session pooler URI)");
+  console.error("Missing SUPABASE_DB_URL in .env.local (Supabase -> Connect -> Session pooler URI)");
   process.exit(1);
 }
 

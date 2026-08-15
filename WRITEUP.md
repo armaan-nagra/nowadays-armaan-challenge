@@ -1,37 +1,92 @@
-# Written response — Private Dining Finder
+# Written response
 
-## How I framed the problem
+## Approach
 
-The prompt has a tell in it: the required "trust label." Private dining is still handled manually at Nowadays because the data is messy — capacities live in PDFs on restaurant websites, minimum spends get quoted over the phone, and half the venues that host great buyouts never say so online. So I decided the core of my submission shouldn't be a CRUD app over a venues table; it should be **a data pipeline that's honest about what it knows**, and a planner UX that makes uncertain data genuinely usable.
+The trust label requirement shaped everything. Private dining data is messy:
+capacities live in PDFs, minimum spends get quoted over the phone, and plenty
+of venues that host great buyouts never mention it online. So rather than a
+CRUD app over a hand-filled venues table, I built a data pipeline that is
+honest about what it actually knows, plus a planner UI that makes uncertain
+data usable.
 
-## How I built it
+## How it works
 
-**1. An enrichment pipeline, not a hand-curated dataset.** A script (`scripts/pipeline/`) discovers candidate venues near a point with the Google Places API, fetches each venue's website, follows links to private-dining/events pages, and uses Claude with structured outputs to extract: private rooms with seated/standing capacities, minimum spends and per-person pricing, menus, dietary accommodations, and events-specific contact info. Every extracted fact carries an `explicitly_stated` flag and a source URL.
+The pipeline discovers candidate venues near a point with the Google Places
+API, fetches each venue's website, follows links to private dining and events
+pages, and uses Claude with structured outputs to pull out rooms with
+seated/standing capacities, pricing, menus, dietary accommodations, and events
+contacts. Every extracted fact carries an `explicitly_stated` flag and a
+source URL.
 
-**2. Trust as provenance, per field.** The trust rules are simple and auditable (`trust.ts`): a fact stated verbatim on the venue's own site → `verified` (with the source link shown in the UI); evidence of private dining but inferred specifics → `likely`; no published evidence → `unverified / needs a call`. Trust is computed per field — a venue can have verified rooms and an unverified price — because that's the real shape of this data.
+The trust rules (`src/lib/trust.ts`) are deliberately simple so they can be
+audited: a fact stated on the venue's own site is "verified" and the UI links
+the source; evidence of private dining with inferred specifics is "likely";
+no published evidence means "needs a call". Trust is computed per field
+because that's the real shape of the data. A venue can have verified rooms
+and an unverified price.
 
-**3. Search over the enriched library.** The app geocodes any address, pulls venues within a crow-flies bound (Postgres haversine RPC in Supabase), computes real **walking or driving** times via the Google Routes API (cached per origin–venue–mode in Postgres so repeat searches are instant), and ranks. Walking is the default — scenario 3 requires it, and walk radii are how groups move in Manhattan, SoMa, and Waikiki — with a drive toggle for car-first cities and larger radii.
+Search geocodes any address, pulls candidates within a crow-flies bound using
+a Postgres haversine function, gets real walking or driving times from the
+Routes API (cached per origin/venue/mode so repeat searches are instant), and
+ranks. Walking is the default since that's how groups actually move in
+Manhattan, SoMa, and Waikiki, with a drive toggle for car-first cities.
 
-**4. Transparent ranking.** The score is a weighted blend of capacity fit (a 64-seat room for 50 people beats a 300-person ballroom), trust, commute, event-style match (the 200-person Waikiki happy hour scores venues on *standing* capacity), price-signal availability, and Google rating. Every card shows a "Why here" line — planners have to defend picks to their boss, so a ranked list without reasons is a black box they can't use.
+Ranking is a weighted blend of capacity fit (a 64 seat room for 50 people
+beats a 300 person ballroom), trust, commute, event style match, price signal
+availability, and rating. Each card shows a "why here" line. Planners have to
+defend picks to whoever's paying, and a ranked list without reasons is a black
+box they can't use.
 
-**5. A UI with a point of view.** Planners' tools are usually grey. I went the other way: a sticker-book aesthetic — watercolor map tiles, hand-drawn walking radius, wobbling numbered pins — with deliberately crisp data underneath (monospace chips for times/capacities/prices, plain-language trust badges). The playfulness is the skin; the information design is conservative. The compare tray (pick up to 4 → side-by-side table) mirrors the actual decision workflow, and the detail drawer puts contact info and trust reasons front and center for the "needs a call" cases.
+For the UI I went playful on purpose: planner tools are usually grey. It's a
+sticker-book look with watercolor map tiles, a hand-drawn walking radius, and
+numbered pins, but the information design underneath is conservative: mono
+numerals for times and capacities, plain-language trust badges, a compare
+tray for shortlisting up to four venues side by side, and a detail drawer
+that puts contacts and trust reasoning front and center for the "needs a
+call" cases.
 
-## Key decisions & trade-offs
+## Decisions and trade-offs
 
-- **Hybrid coverage: pre-seeded areas + live on-demand scouting.** Seeding the three scenario areas keeps demo searches instant. For any other address, the app doesn't fake results or dead-end — the empty state offers "Scout this area now," which runs the same pipeline live server-side with a progress bar, streaming ranked venues in as their websites are read (~2–3 min per neighborhood). The click-to-start gate keeps enrichment spend intentional rather than firing on every typo.
-- **HTML-only extraction.** Many PD kits are PDFs. I surface them as linked documents rather than parsing them — parsing PDFs well is a project of its own, and a wrong capacity is worse than a link. This was the single biggest coverage trade-off.
-- **Haversine prefilter + real routes.** Crow-flies distance is always ≤ walking distance, so a `walk_speed × minutes` radius is a safe overapproximation for the DB query; exact walking times then come from the Routes API only for candidates. This keeps API spend low without ever wrongly excluding a venue.
-- **Conservative extraction prompt.** The failure mode that kills trust in a tool like this is a confident wrong number. The extraction is instructed to prefer `null` + `explicitly_stated: false` over guessing, and the trust rules only award `verified` when there's a URL to point at.
+Seeding vs live coverage. The three scenario areas are pre-seeded so demo
+searches are instant. Any other address gets a "Scout this area now" button
+that runs the same pipeline live with a progress bar, streaming results in as
+venues are confirmed (about 2-3 minutes). Making it click-to-start keeps API
+spend intentional instead of firing on every typo.
+
+HTML-only extraction. A lot of private dining kits are PDFs. I link them
+instead of parsing them, because parsing PDFs well is its own project and a
+wrong capacity is worse than a link. This was the biggest coverage trade-off.
+
+Haversine prefilter plus real routes. Crow-flies distance is always shorter
+than walking distance, so a walk-speed-times-minutes radius is a safe
+overapproximation for the DB query. Exact times then come from the Routes API
+only for the candidates. Cheap, and it never wrongly excludes a venue.
+
+Conservative extraction. The failure mode that kills a tool like this is a
+confident wrong number. The extraction prompt prefers null over guessing, and
+"verified" is only awarded when there's a URL to point at.
 
 ## Challenges
 
-- **Restaurant websites are hostile.** JS-heavy pages, capacity numbers in image carousels, "private events" pages hidden behind marketing-speak URLs. The link-discovery heuristics (regex over hrefs *and* anchor text, PD-page-first sorting, contact scraping from `mailto:`/`tel:`) recovered most of it; the trust system absorbs the rest honestly — a venue we couldn't read becomes "needs a call," not a fabricated entry.
-- **The 200-person Waikiki scenario** is a different shape of problem — few restaurants seat 200, so the pipeline runs extra discovery queries there (hotel banquet, luau venues, event spaces) and the ranker switches to standing capacity for reception searches.
+Restaurant websites are hostile: JS-heavy pages, capacities inside image
+carousels, events pages hiding behind marketing URLs. Link discovery matches
+on both hrefs and anchor text, sorts private-dining-looking pages first, and
+scrapes contacts from mailto/tel links. Whatever still can't be read becomes
+"needs a call" rather than a fabricated entry.
+
+The 200 person Waikiki scenario is a different problem shape. Few restaurants
+seat 200, so the pipeline runs extra discovery queries there (hotel banquet,
+luau, event spaces) and the ranker switches to standing capacity for
+reception-style searches.
 
 ## With more time
 
-- Parse PDF private-dining kits (they hold the best capacity/pricing data).
-- A re-verification loop: facts age; store `fetched_at` (already in the schema) and re-crawl stale venues on a schedule.
-- Planner accounts: saved searches, shortlists, and a one-click "draft the inquiry email" using the extracted events contact.
-- Availability signals — scraping OpenTable/SevenRooms large-party availability would upgrade "likely" venues without a phone call.
-- Feedback loop: when a Nowadays planner confirms a capacity by phone, write it back as `verified (by Nowadays)` — the manual work the team already does would compound into the dataset.
+- Parse PDF event kits, which hold the best capacity and pricing data.
+- Re-verification: facts age. `fetched_at` is already stored, so stale venues
+  could be re-crawled on a schedule.
+- Planner accounts with saved searches and a one-click inquiry email draft
+  using the extracted events contact.
+- Availability signals from OpenTable/SevenRooms large-party slots.
+- A feedback loop: when a planner confirms a capacity by phone, write it back
+  as verified. The manual work the team already does would compound into the
+  dataset.

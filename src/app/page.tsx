@@ -114,7 +114,7 @@ export default function Home() {
       try {
         const res = await fetch(`/api/research?key=${encodeURIComponent(scout.key)}`);
         if (res.status === 404) {
-          // server restarted and lost the in-memory job — stop spinning
+          // server restarted and lost the in-memory job - stop spinning
           setScout((s) => (s ? { ...s, finished: true } : s));
           return;
         }
@@ -133,7 +133,7 @@ export default function Home() {
           }
         }
       } catch {
-        // transient poll failure — keep trying
+        // transient poll failure - keep trying
       }
     }, 6000);
     return () => clearInterval(id);
@@ -205,10 +205,10 @@ export default function Home() {
             </p>
             <p className="text-sm text-ink-soft mt-2 max-w-md mx-auto">
               Type an office, hotel, or landmark and we&apos;ll rank private dining venues within
-              walking or driving distance — with capacities, price signals, and a trust label on every fact.
+              walking or driving distance - with capacities, price signals, and a trust label on every fact.
             </p>
             <p className="font-hand text-xl text-ink-soft mt-4 -rotate-1">
-              psst — the try-me chips up there already know the answer ↑
+              psst - the try-me chips up there already know the answer ↑
             </p>
           </div>
         )}
@@ -243,7 +243,7 @@ export default function Home() {
                 <div className="text-3xl animate-bounce">🕵️</div>
                 <div className="flex-1">
                   <p className="font-display font-semibold">
-                    Live-scouting this neighborhood — reading venue websites…
+                    Live-scouting this neighborhood - reading venue websites…
                   </p>
                   <p className="text-sm text-ink-soft">
                     {scout!.total > 0
@@ -266,7 +266,7 @@ export default function Home() {
               <div className="sticker p-8 text-center">
                 {scouting ? (
                   <p className="text-sm text-ink-soft max-w-md mx-auto">
-                    First confirmed venues will pop in here — usually within a minute.
+                    First confirmed venues will pop in here - usually within a minute.
                   </p>
                 ) : scout?.finished ? (
                   scout.error ? (
@@ -275,7 +275,7 @@ export default function Home() {
                         Scouting hit a snag
                       </p>
                       <p className="text-sm text-ink-soft max-w-md mx-auto mt-1">
-                        {scout.error} — try again in a minute.
+                        {scout.error} - try again in a minute.
                       </p>
                     </>
                   ) : (
@@ -291,11 +291,11 @@ export default function Home() {
                     </p>
                     <p className="text-sm text-ink-soft max-w-md mx-auto mt-2">
                       Table Scout can research it right now: it finds nearby venues, reads their
-                      websites, and extracts rooms, capacities, and prices — with a trust label on
+                      websites, and extracts rooms, capacities, and prices - with a trust label on
                       everything.
                     </p>
                     <button onClick={startScout} className="btn-cta px-6 py-2.5 text-lg mt-4">
-                      Scout this area now (~2–3 min)
+                      Scout this area now (~2-3 min)
                     </button>
                   </>
                 )}

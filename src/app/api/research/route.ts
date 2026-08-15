@@ -11,14 +11,14 @@ interface Job extends ResearchProgress {
   error?: string;
 }
 
-// In-memory job registry — fine for a local/single-process deployment, which is
+// In-memory job registry - fine for a local/single-process deployment, which is
 // what this research tool is. A hosted multi-instance version would move this
 // to a Postgres table.
 const globalJobs = globalThis as unknown as { __researchJobs?: Map<string, Job> };
 const jobs = (globalJobs.__researchJobs ??= new Map<string, Job>());
 
 const MAX_CONCURRENT_JOBS = 2;
-const LIVE_LIMIT = 18; // venues per live scout — keeps it ~2-3 minutes
+const LIVE_LIMIT = 18; // venues per live scout - keeps it ~2-3 minutes
 const JOB_TIMEOUT_MS = 15 * 60_000; // treat a job as dead after 15 min
 const JOB_TTL_MS = 60 * 60_000; // evict finished/dead jobs after an hour
 
@@ -68,7 +68,7 @@ export async function POST(req: Request) {
   const running = [...jobs.values()].filter((j) => !j.finished).length;
   if (running >= MAX_CONCURRENT_JOBS) {
     return NextResponse.json(
-      { error: "Two areas are already being scouted — give them a minute to finish." },
+      { error: "Two areas are already being scouted - give them a minute to finish." },
       { status: 429 }
     );
   }
@@ -77,7 +77,7 @@ export async function POST(req: Request) {
   jobs.set(key, job);
 
   const city = origin.formatted.split(",").slice(-3).join(",").trim();
-  // Fire and forget — the client polls GET for progress.
+  // Fire and forget - the client polls GET for progress.
   researchArea(supabaseAdmin(), origin, radiusM, {
     city,
     limit: LIVE_LIMIT,

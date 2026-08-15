@@ -35,11 +35,11 @@ export async function discover(
       for (const p of results) {
         if (byId.has(p.id)) continue;
         if (p.types.some((t) => EXCLUDED_TYPES.has(t))) continue;
-        // locationBias is soft — enforce the radius (25% slack; exact commute computed later)
+        // locationBias is soft - enforce the radius (25% slack; exact commute computed later)
         if (haversineMeters(center, p) > radiusM * 1.25) continue;
         byId.set(p.id, p);
       }
-      log(`query "${q}" → ${results.length} results (${byId.size} unique kept)`);
+      log(`query "${q}" -> ${results.length} results (${byId.size} unique kept)`);
     } catch (err) {
       log(`query "${q}" failed: ${(err as Error).message}`);
     }
@@ -53,7 +53,7 @@ export async function enrichAndStore(db: SupabaseClient, place: PlaceResult, cit
     site && site.pages.length > 0 ? await extractVenueFacts(place.name, site) : null;
 
   // A failed read (site down, extraction refused) must never downgrade data we
-  // already hold — skip the write if the stored row knows more than we do now.
+  // already hold - skip the write if the stored row knows more than we do now.
   if (!extraction) {
     const { data: existing } = await db
       .from("venues")
@@ -71,8 +71,8 @@ export async function enrichAndStore(db: SupabaseClient, place: PlaceResult, cit
         trust: "unverified" as const,
         reasons: [
           place.website
-            ? "Website could not be read — needs a call to confirm private dining"
-            : "No website on file — needs a call to confirm private dining",
+            ? "Website could not be read - needs a call to confirm private dining"
+            : "No website on file - needs a call to confirm private dining",
         ],
       };
 
@@ -223,7 +223,7 @@ export async function researchArea(
       try {
         const r = await enrichAndStore(db, place, opts.city);
         progress.succeeded++;
-        log(`✔ ${place.name} — ${r.trust}, ${r.rooms} rooms`);
+        log(`ok: ${place.name} - ${r.trust}, ${r.rooms} rooms`);
       } catch (err) {
         log(`✖ ${place.name}: ${(err as Error).message}`);
       }

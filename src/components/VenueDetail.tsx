@@ -143,8 +143,8 @@ export function VenueDetail({ entry, onClose }: { entry: ScoredVenue; onClose: (
                           <p className="text-[0.75rem] text-ink-soft leading-snug">{r.description}</p>
                         )}
                       </td>
-                      <td className="py-2 pr-2 font-mono">{r.seated_capacity ?? "—"}</td>
-                      <td className="py-2 pr-2 font-mono">{r.standing_capacity ?? "—"}</td>
+                      <td className="py-2 pr-2 font-mono">{r.seated_capacity ?? "-"}</td>
+                      <td className="py-2 pr-2 font-mono">{r.standing_capacity ?? "-"}</td>
                       <td className="py-2">
                         {safeUrl(r.source_url) ? (
                           <a href={r.source_url!} target="_blank" rel="noreferrer">
@@ -161,7 +161,7 @@ export function VenueDetail({ entry, onClose }: { entry: ScoredVenue; onClose: (
             </div>
           ) : (
             <p className="text-sm text-ink-soft">
-              No published room list — the venue may still host private events. Call to ask about
+              No published room list - the venue may still host private events. Call to ask about
               spaces and capacities.
             </p>
           )}
@@ -174,7 +174,7 @@ export function VenueDetail({ entry, onClose }: { entry: ScoredVenue; onClose: (
             <TrustBadge trust={venue.price_trust} tilt={false} />
           </div>
           <p className="text-sm mt-1.5">
-            {price ?? "No pricing published — ask about minimums when you call."}
+            {price ?? "No pricing published - ask about minimums when you call."}
           </p>
           {venue.price_notes && <p className="text-[0.8rem] text-ink-soft mt-1">{venue.price_notes}</p>}
           {safeUrl(venue.price_source_url) && (
@@ -242,7 +242,7 @@ export function VenueDetail({ entry, onClose }: { entry: ScoredVenue; onClose: (
                   <span className="text-ink-soft text-[0.75rem]">
                     {venue.contact_trust === "verified"
                       ? "(events)"
-                      : "(from website — confirm it reaches events)"}
+                      : "(from website - confirm it reaches events)"}
                   </span>
                 </span>
               </p>
@@ -264,7 +264,7 @@ export function VenueDetail({ entry, onClose }: { entry: ScoredVenue; onClose: (
               </p>
             )}
             {!venue.events_email && !venue.events_phone && !venue.phone && (
-              <p className="text-ink-soft">No contact found — try the website above.</p>
+              <p className="text-ink-soft">No contact found - try the website above.</p>
             )}
           </div>
         </div>

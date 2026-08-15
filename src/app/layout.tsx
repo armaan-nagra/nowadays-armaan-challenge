@@ -24,7 +24,7 @@ const caveat = Caveat({
 });
 
 export const metadata: Metadata = {
-  title: "Table Scout — Private Dining Finder",
+  title: "Table Scout - Private Dining Finder",
   description:
     "Find, compare, and trust private dining venues for your next corporate event. By Nowadays.",
 };

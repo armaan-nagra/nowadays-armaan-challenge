@@ -1,131 +1,118 @@
-# Table Scout 🍽️ — Private Dining Finder
+# Table Scout
 
-A research & recommendation tool for corporate event planners. Type an address (with autocomplete), a headcount, a commute mode (**walk or drive**), and a max time, and Table Scout returns a ranked set of private dining venues — each with room-by-room capacities, price signals, contact info, and a **trust label** that tells you exactly how much to believe each fact.
+Private dining finder for corporate event planners, built for the Nowadays
+coding challenge.
 
-Built for the Nowadays Private Dining Finder challenge.
+You give it an address, a headcount, and a max commute time (walking or
+driving), and it returns a ranked list of venues that can host the group.
+Each result shows the private rooms and their capacities, a price signal,
+commute time, and contact info. Every fact carries a trust label so you know
+whether it came from the venue's own website or still needs a phone call.
 
-## How it works
+## Stack
 
-```
-┌─────────────────────── enrichment pipeline (offline) ───────────────────────┐
-│  Google Places (New)  →  venue websites  →  Claude (structured extraction)  │
-│  discovery near a point   PD/events pages     rooms, prices, contacts       │
-│                                                    │                        │
-│                              per-field provenance → trust labels            │
-│                                                    ▼                        │
-│                                            Supabase (Postgres)              │
-└─────────────────────────────────────────────────────────────────────────────┘
-                                                     │
-┌─────────────────────────── app (Next.js) ──────────▼────────────────────────┐
-│  geocode address → radius query → walk/drive times (Google Routes, cached)  │
-│  → transparent weighted ranking → cards + watercolor map + compare tray     │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
-
-**Commute modes: walking and driving** — a 🚶/🚗 toggle in the search bar. Real route times come from the Google Routes API and are cached per (origin, venue, mode) in Postgres. The address field has Google Places autocomplete (proxied server-side so the key stays private).
-
-**Trust labels** come from real provenance, not vibes:
-
-| Label | Meaning |
-|---|---|
-| ✓ `verified` | The fact (a room + capacity, a dollar figure) is stated verbatim on the venue's **own website** — source URL included |
-| ~ `likely` | Good evidence of private dining, but the specific fact is inferred or partial |
-| ☎ `needs a call` | Discovered nearby, but no published evidence — the planner should confirm by phone |
-
-Trust is per-field: a venue can have `verified` rooms but an `unverified` price signal.
-
-## Tech stack
-
-- **Frontend:** Next.js 16 (App Router), React 19, Tailwind v4, Leaflet + react-leaflet (Stamen watercolor tiles via Stadia Maps)
-- **Database:** Supabase (PostgreSQL) — venues, private rooms, commute cache, haversine radius RPC, RLS (public read / service-role write)
-- **Pipeline:** Google Places API (New) + Geocoding + Routes API, Claude (`claude-opus-5`) with structured outputs for extraction
-- **Ranking:** weighted score over capacity fit, trust, commute, event style, price signal, and Google rating — every card shows *why* it ranked where it did
+- Next.js 16, React 19, Tailwind 4
+- Supabase (Postgres): venues, private rooms, commute cache, radius search RPC
+- Leaflet with Stamen watercolor tiles (via Stadia Maps)
+- Google Places (New), Geocoding, and Routes APIs
+- Claude for structured extraction from venue websites (pipeline only)
 
 ## Setup
-
-### 1. Install
 
 ```bash
 npm install
 ```
 
-### 2. Environment
-
 Copy `.env.example` to `.env.local` and fill in:
 
-```bash
-NEXT_PUBLIC_SUPABASE_URL=        # Supabase → Project Settings → API
+```
+NEXT_PUBLIC_SUPABASE_URL=        Supabase project settings > API
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
-SUPABASE_DB_URL=                 # Supabase → Connect → Session pooler URI
-GOOGLE_MAPS_API_KEY=             # enable: Places API (New), Geocoding API, Routes API
-ANTHROPIC_API_KEY=               # only needed to run the enrichment pipeline
+SUPABASE_DB_URL=                 session pooler URI, used by the migration runner
+GOOGLE_MAPS_API_KEY=             needs Places API (New), Geocoding API, Routes API
+ANTHROPIC_API_KEY=               only needed to run the enrichment pipeline
 ```
 
-### 3. Migrate the database
+Apply the schema:
 
 ```bash
 npm run db:migrate
 ```
 
-Applies `supabase/migrations/*.sql` (tables, radius-search function, RLS policies).
-
-### 4. Seed venue data
-
-Run the enrichment pipeline for the three scenario areas (takes a few minutes; discovers venues, reads their websites, extracts private dining facts with Claude):
+Seed venue data for the three challenge areas (takes a few minutes, it reads
+real venue websites):
 
 ```bash
 npm run pipeline -- --all
 ```
 
-Or one area / any custom address:
+You can also seed a single area or any address:
 
 ```bash
-npm run pipeline -- --area times-square      # also: salesforce-tower, waikiki
+npm run pipeline -- --area times-square        # or salesforce-tower, waikiki
 npm run pipeline -- --address "Ferry Building, San Francisco" --radius 1200
 ```
 
-### 5. Run
+Then:
 
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) and hit one of the **Try:** chips — they're preloaded with the three required scenarios:
+The three required scenarios are preloaded as "try" chips under the search bar:
+50 near Times Square (20 min walk), 30 near Salesforce Tower (15 min walk), and
+the 200 person Waikiki reception (15 min walk).
 
-1. 50 people near Times Square, ≤ 20 min walk
-2. 30 people near Salesforce Tower (415 Mission St, SF), ≤ 15 min walk
-3. 200 people, reception style, near Hilton Hawaiian Village Waikiki, ≤ 15 min walk
+Note on map tiles: Stadia serves the watercolor style without a key on
+localhost. If you deploy this you'll need a free Stadia key added to the tile
+URL in `src/components/MapPanel.tsx`.
 
-> **Map tiles:** the Stamen watercolor style is served by Stadia Maps, which is key-free on `localhost`. For a deployed domain, add a free Stadia API key to the tile URL in `src/components/MapPanel.tsx`.
+## How data gets in
 
-## Repo tour
+There are two paths into the database:
+
+1. The offline pipeline (`scripts/pipeline/run.ts`). It finds candidate venues
+   near a point with Google Places, fetches each venue's website, follows links
+   to private dining / events pages, and extracts rooms, capacities, pricing,
+   dietary info, and events contacts with Claude. Everything is upserted into
+   Supabase with a source URL per fact.
+2. Live scouting. If you search an address that hasn't been seeded, the empty
+   state offers "Scout this area now", which runs the same pipeline server side
+   with a progress bar. Results stream in as venues are confirmed, usually
+   2-3 minutes for a new neighborhood.
+
+Search itself is: geocode the address, pull candidates inside a crow-flies
+radius (Postgres haversine function), get real walk/drive times from the
+Routes API (cached per origin/venue/mode), then rank on capacity fit, trust,
+commute, event style, price signal, and rating. Each card has a "why here"
+line explaining its rank.
+
+## Trust labels
+
+- verified: the fact is stated on the venue's own website, source link included
+- likely: good evidence of private dining, but the specific number is inferred
+- needs a call: found nearby, but nothing published to back it up
+
+Trust is computed per field, so a venue can have verified rooms and an
+unverified price at the same time.
+
+## Layout
 
 ```
-supabase/migrations/     schema: venues, private_rooms, commute_cache, radius RPC, RLS
-scripts/db/migrate.ts    tiny migration runner (npm run db:migrate)
-scripts/pipeline/run.ts  pipeline CLI (npm run pipeline)
-src/lib/
-  enrich.ts              enrichment core: discover → enrich → upsert
-  site.ts                website fetching + private-dining page discovery
-  extract.ts             Claude structured extraction (zod schema)
-  trust.ts               provenance → trust label rules
-  google.ts              Geocoding, Places (New), Autocomplete, Routes helpers
-  ranking.ts             transparent weighted scoring + "why" explanations
-  types.ts               shared domain types
-src/app/api/search/      search endpoint: geocode → radius → commutes → rank
-src/app/api/research/    live "Scout this area" jobs with progress
-src/app/api/autocomplete/ Places autocomplete proxy
-src/components/          SearchBar, VenueCard, MapPanel, VenueDetail, CompareTray
+supabase/migrations/      schema + radius search + RLS
+scripts/db/migrate.ts     migration runner
+scripts/pipeline/run.ts   pipeline CLI
+src/lib/                  enrichment, extraction, trust rules, ranking, google helpers
+src/app/api/              search, autocomplete proxy, live scout jobs
+src/components/           search bar, venue cards, map, detail drawer, compare tray
 ```
 
-## Any address works — two speeds
+## Limitations
 
-- **Seeded areas** (the three scenarios + anywhere you've run the pipeline): instant results.
-- **Anywhere else**: the empty state offers **"Scout this area now"** — the same enrichment pipeline runs live server-side (discovery → website reading → Claude extraction), with a progress bar, and ranked results stream in as venues are confirmed (~2–3 minutes for a new neighborhood). Live scouting researches up to ~8 km around the address (driving searches beyond that need an offline pipeline run), and the click-to-start gate keeps API spend intentional.
-
-## Notes & limitations
-
-- Research and recommendations only — no live booking integrations, by design.
-- Live scout jobs are tracked in-memory and the `/api/research` endpoint is unauthenticated — both fine for a local research tool running on a long-lived server; a hosted version would move job state to Postgres, run enrichment in a queue/worker (fire-and-forget promises don't survive serverless freezes), and gate scouting behind auth/rate limits (each scout spends real API credits).
-- The pipeline reads HTML pages only; capacities locked inside PDFs are surfaced as linked documents rather than parsed (a known next step).
+- Research and recommendations only, no booking integrations (per the brief).
+- The pipeline reads HTML only. Capacities buried in PDF event kits are linked,
+  not parsed.
+- Live scout jobs are held in memory and the endpoint is unauthenticated, which
+  is fine locally. A hosted version would want job state in Postgres, a real
+  queue, and rate limiting, since each scout costs API credits.

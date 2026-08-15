@@ -109,7 +109,7 @@ export function CompareTray({
                   <Row label={entries.some((e) => e.commute?.mode === "driving") ? "Drive" : "Walk"}>
                     {entries.map((e) => (
                       <td key={e.venue.id} className="py-2 pr-4 font-mono">
-                        {e.commute ? `${Math.round(e.commute.duration_minutes)} min` : "—"}
+                        {e.commute ? `${Math.round(e.commute.duration_minutes)} min` : "-"}
                       </td>
                     ))}
                   </Row>
@@ -118,7 +118,7 @@ export function CompareTray({
                       <td key={e.venue.id} className="py-2 pr-4">
                         {e.bestRoom
                           ? `${e.bestRoom.is_full_buyout ? "Full buyout" : e.bestRoom.name}`
-                          : "—"}
+                          : "-"}
                       </td>
                     ))}
                   </Row>
@@ -133,7 +133,7 @@ export function CompareTray({
                     {entries.map((e) => (
                       <td key={e.venue.id} className="py-2 pr-4">
                         <div className="flex items-center gap-1.5 flex-wrap">
-                          <span className="font-mono">{priceSignal(e.venue) ?? "—"}</span>
+                          <span className="font-mono">{priceSignal(e.venue) ?? "-"}</span>
                           <TrustBadge trust={e.venue.price_trust} tilt={false} />
                         </div>
                       </td>
@@ -144,14 +144,14 @@ export function CompareTray({
                       <td key={e.venue.id} className="py-2 pr-4 text-[0.8rem]">
                         {e.venue.dietary_options.length > 0
                           ? e.venue.dietary_options.map((d) => d.replace("_", "-")).join(", ")
-                          : "—"}
+                          : "-"}
                       </td>
                     ))}
                   </Row>
                   <Row label="Contact">
                     {entries.map((e) => (
                       <td key={e.venue.id} className="py-2 pr-4 font-mono text-[0.75rem]">
-                        {e.venue.events_email ?? e.venue.events_phone ?? e.venue.phone ?? "—"}
+                        {e.venue.events_email ?? e.venue.events_phone ?? e.venue.phone ?? "-"}
                       </td>
                     ))}
                   </Row>

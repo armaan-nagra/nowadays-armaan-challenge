@@ -1,5 +1,5 @@
 /**
- * Claude extraction: venue website text → structured private dining facts.
+ * Claude extraction: venue website text -> structured private dining facts.
  * Every fact carries `explicitly_stated` so trust labels reflect real provenance.
  */
 import Anthropic from "@anthropic-ai/sdk";
@@ -75,7 +75,7 @@ function client(): Anthropic {
         .find((l) => l.startsWith("ANTHROPIC_API_KEY="));
       apiKey = line?.slice("ANTHROPIC_API_KEY=".length).trim();
     } catch {
-      // fall through — SDK will throw a clear auth error
+      // fall through - SDK will throw a clear auth error
     }
   }
   _client = new Anthropic({ apiKey });
@@ -107,7 +107,7 @@ export async function extractVenueFacts(
       "Be conservative: mark explicitly_stated true ONLY when the fact (a room name with a capacity number, a dollar figure) " +
       "appears verbatim in the provided pages. Reasonable inferences are allowed but must have explicitly_stated false. " +
       "Never invent capacities, prices, or contact details. Use null when unknown. " +
-      "Capacities: 'seats 40' → seated; 'up to 80 for receptions/standing/cocktail' → standing. " +
+      "Capacities: 'seats 40' -> seated; 'up to 80 for receptions/standing/cocktail' -> standing. " +
       "If the whole venue can be bought out, include it as a room with is_full_buyout true.",
     messages: [
       {

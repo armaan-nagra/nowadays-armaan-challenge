@@ -1,5 +1,5 @@
 /**
- * Tiny hand-drawn-style SVG icons — round caps and slightly wonky paths so they
+ * Tiny hand-drawn-style SVG icons - round caps and slightly wonky paths so they
  * read as marker doodles, not icon-font glyphs. All inherit currentColor.
  */
 

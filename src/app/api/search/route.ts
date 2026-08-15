@@ -14,7 +14,7 @@ import type {
 export const maxDuration = 60;
 
 // Crow-flies distance is always ≤ route distance, so pace × minutes is a safe
-// upper bound for the DB radius query. Driving pace is a dense-urban estimate —
+// upper bound for the DB radius query. Driving pace is a dense-urban estimate -
 // highway-reachable venues beyond it are out of scope for a dinner search.
 const PACE_METERS_PER_MIN: Record<CommuteMode, number> = {
   walking: 80,
@@ -48,7 +48,7 @@ export async function POST(req: Request) {
     origin = await geocode(address);
   } catch {
     return NextResponse.json(
-      { error: "We couldn't find that address — try adding a city or zip." },
+      { error: "We couldn't find that address - try adding a city or zip." },
       { status: 422 }
     );
   }

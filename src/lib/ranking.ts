@@ -57,22 +57,22 @@ export function scoreVenue(
         ? `Full buyout fits ${headcount} (${capLabel})`
         : `"${bestRoom.name}" fits ${headcount} (${capLabel})`
     );
-    if (oversize > 4) why.push("Space is much larger than the group — may feel empty");
+    if (oversize > 4) why.push("Space is much larger than the group - may feel empty");
   } else if (venueMax != null && venueMax >= headcount) {
     capacity = 0.75;
     why.push(`Total private capacity ~${venueMax} covers ${headcount}, exact room mix to confirm`);
   } else if (venueMax != null && venueMax >= headcount * 0.8) {
     capacity = 0.35;
-    why.push(`Published capacity (${venueMax}) is tight for ${headcount} — worth a call`);
+    why.push(`Published capacity (${venueMax}) is tight for ${headcount} - worth a call`);
   } else if (venueMax != null) {
-    // We know it's too small — drop it entirely.
+    // We know it's too small - drop it entirely.
     return null;
   } else if (venue.trust !== "unverified") {
     capacity = 0.3;
-    why.push("Offers private dining but capacities aren't published — call to confirm size");
+    why.push("Offers private dining but capacities aren't published - call to confirm size");
   } else {
     capacity = 0.15;
-    why.push("Capacity unknown — needs a call");
+    why.push("Capacity unknown - needs a call");
   }
 
   // ----- commute -----
@@ -88,7 +88,7 @@ export function scoreVenue(
   // ----- trust -----
   const trustScore = TRUST_SCORE[venue.trust];
   if (venue.trust === "verified") why.push("Rooms & capacities verified on the venue's own site");
-  else if (venue.trust === "unverified") why.push("Unverified — needs a call");
+  else if (venue.trust === "unverified") why.push("Unverified - needs a call");
 
   // ----- style -----
   let styleScore = 0.5;

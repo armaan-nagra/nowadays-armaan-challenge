@@ -24,7 +24,7 @@ export function TrustBadge({
           ? "Stated on the venue's own website"
           : trust === "likely"
             ? "Good evidence, but not confirmed by the venue"
-            : "No published evidence — call to confirm"
+            : "No published evidence - call to confirm"
       }
     >
       <span aria-hidden>{s.icon}</span>
@@ -46,12 +46,12 @@ export function priceSignal(v: {
 }): string | null {
   if (v.min_spend_low != null) {
     return v.min_spend_high != null && v.min_spend_high !== v.min_spend_low
-      ? `${formatMoney(v.min_spend_low)}–${formatMoney(v.min_spend_high)} min`
+      ? `${formatMoney(v.min_spend_low)}-${formatMoney(v.min_spend_high)} min`
       : `${formatMoney(v.min_spend_low)}+ min spend`;
   }
   if (v.per_person_low != null) {
     return v.per_person_high != null && v.per_person_high !== v.per_person_low
-      ? `$${v.per_person_low}–$${v.per_person_high}/person`
+      ? `$${v.per_person_low}-$${v.per_person_high}/person`
       : `$${v.per_person_low}+/person`;
   }
   return v.price_tier;

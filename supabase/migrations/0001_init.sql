@@ -1,8 +1,8 @@
--- Private Dining Finder — initial schema
+-- Private Dining Finder - initial schema
 -- Trust model: every uncertain fact (rooms, price, contact) carries its own
 -- trust label + source URL. 'verified' = stated on the venue's own site,
 -- 'likely' = inferred from partial/third-party evidence,
--- 'unverified' = discovered but unconfirmed — needs a call.
+-- 'unverified' = discovered but unconfirmed - needs a call.
 
 create type trust_label as enum ('verified', 'likely', 'unverified');
 

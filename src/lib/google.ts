@@ -123,7 +123,7 @@ export interface WalkResult {
   distanceMeters: number;
 }
 
-/** Walking or driving routes via the Routes API, one origin → many destinations. */
+/** Walking or driving routes via the Routes API, one origin -> many destinations. */
 export async function routeTimes(
   origin: { lat: number; lng: number },
   destinations: { lat: number; lng: number }[],

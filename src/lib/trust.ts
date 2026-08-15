@@ -1,8 +1,8 @@
 /**
  * Trust labels from provenance:
- *  verified   — fact stated verbatim on the venue's own site (we have the URL)
- *  likely     — evidence of private dining but the specific fact is inferred/partial
- *  unverified — no direct evidence; needs a call
+ *  verified   - fact stated verbatim on the venue's own site (we have the URL)
+ *  likely     - evidence of private dining but the specific fact is inferred/partial
+ *  unverified - no direct evidence; needs a call
  */
 import type { Extraction } from "./extract";
 import type { TrustLabel } from "./types";
@@ -31,7 +31,7 @@ export function venueTrust(ex: Extraction): { trust: TrustLabel; reasons: string
     else reasons.push("No specific room capacities published");
     return { trust: "likely", reasons };
   }
-  reasons.push("No private dining evidence found online — worth a call to confirm");
+  reasons.push("No private dining evidence found online - worth a call to confirm");
   return { trust: "unverified", reasons };
 }
 

@@ -73,7 +73,7 @@ function extractLinks(html: string, baseUrl: string): { href: string; label: str
       const label = htmlToText(m[2]).slice(0, 120);
       links.push({ href, label });
     } catch {
-      // unparseable href — skip
+      // unparseable href - skip
     }
   }
   return links;
@@ -137,7 +137,7 @@ export async function fetchSiteContent(website: string): Promise<SiteContent> {
     const html = await fetchHtml(url);
     if (!html) continue;
     collectContacts(html);
-    // pick up menu/PDF links on PD pages too — that's where PD kits live
+    // pick up menu/PDF links on PD pages too - that's where PD kits live
     for (const { href, label } of extractLinks(html, url)) {
       if (href.toLowerCase().endsWith(".pdf")) {
         if (PD_LINK_RE.test(href) || PD_LINK_RE.test(label)) pdfUrls.add(href);

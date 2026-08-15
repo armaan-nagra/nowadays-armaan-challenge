@@ -1,5 +1,5 @@
 /**
- * Offline enrichment pipeline — thin CLI over src/lib/enrich.ts.
+ * Offline enrichment pipeline - thin CLI over src/lib/enrich.ts.
  *
  * Usage:
  *   npm run pipeline -- --area times-square
@@ -83,7 +83,7 @@ async function runArea(
     skipExisting: !force,
     log: (msg) => console.log(`  ${msg}`),
   });
-  console.log(`  → enriched ${result.succeeded}/${result.total}`);
+  console.log(`  -> enriched ${result.succeeded}/${result.total}`);
 }
 
 async function main() {
