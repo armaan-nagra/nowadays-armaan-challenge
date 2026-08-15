@@ -1,4 +1,4 @@
-# Table Scout
+# venuemaxxing
 
 Private dining finder for corporate event planners, built for the Nowadays
 coding challenge.

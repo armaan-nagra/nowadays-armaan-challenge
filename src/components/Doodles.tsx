@@ -66,16 +66,6 @@ export function PinIcon({ className = "w-3.5 h-3.5" }: { className?: string }) {
   );
 }
 
-/** loose hand-drawn arrow, pointing down-left; rotate with classes as needed */
-export function ScribbleArrow({ className = "w-8 h-8" }: { className?: string }) {
-  return (
-    <Svg className={className} viewBox="0 0 48 48" strokeWidth={2.4}>
-      <path d="M40 8c-2 10-10 22-26 27" />
-      <path d="M20 30l-6.5 5.5L22 38" />
-    </Svg>
-  );
-}
-
 /** squiggly "map" doodle for the empty state */
 export function MapDoodle({ className = "w-16 h-16" }: { className?: string }) {
   return (

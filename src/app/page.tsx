@@ -168,7 +168,7 @@ export default function Home() {
             className="font-display font-extrabold text-3xl sm:text-4xl bg-paper border-2 border-ink rounded-2xl px-4 py-1.5 -rotate-1 inline-block"
             style={{ boxShadow: "5px 5px 0 0 #22262b" }}
           >
-            Table&nbsp;Scout
+            venuemaxxing
           </h1>
         </div>
       </header>
@@ -200,15 +200,10 @@ export default function Home() {
         {!loading && !data && !error && (
           <div className="sticker p-10 text-center">
             <MapDoodle className="w-16 h-16 text-ink mx-auto" />
-            <p className="font-display font-bold text-2xl mt-3">
-              Where&apos;s <span className="scribble-under">dinner</span>?
-            </p>
+            <p className="font-display font-bold text-2xl mt-3">Where&apos;s dinner?</p>
             <p className="text-sm text-ink-soft mt-2 max-w-md mx-auto">
               Type an office, hotel, or landmark and we&apos;ll rank private dining venues within
               walking or driving distance - with capacities, price signals, and a trust label on every fact.
-            </p>
-            <p className="font-hand text-xl text-ink-soft mt-4 -rotate-1">
-              psst - the try-me chips up there already know the answer ↑
             </p>
           </div>
         )}
@@ -290,7 +285,7 @@ export default function Home() {
                       We haven&apos;t researched this area yet
                     </p>
                     <p className="text-sm text-ink-soft max-w-md mx-auto mt-2">
-                      Table Scout can research it right now: it finds nearby venues, reads their
+                      venuemaxxing can research it right now: it finds nearby venues, reads their
                       websites, and extracts rooms, capacities, and prices - with a trust label on
                       everything.
                     </p>
